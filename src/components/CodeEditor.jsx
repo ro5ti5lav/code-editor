@@ -3,14 +3,14 @@ import Editor from "@monaco-editor/react";
 
 const CodeEditor = () => {
     const defaultCode = {
-        python: '# Введите ваш Python код здесь\nprint("Привет, мир!")',
-        go: `// Введите ваш Go код здесь
+        python: '# Enter your Python code here\nprint("Hello, World!")',
+        go: `// Enter your Go code here
 package main
 
 import "fmt"
 
 func main() {
-    fmt.Println("Привет, мир!")
+    fmt.Println("Hello, World!")
 }`
     };
 
@@ -20,18 +20,18 @@ func main() {
 
     const validatePythonCode = (code) => {
         if (!code.trim()) {
-            throw new Error('Пустой код');
+            throw new Error('Empty code');
         }
 
         if (code.includes('print(') && !code.includes(')')) {
-            throw new Error('Незакрытая скобка в print()');
+            throw new Error('Unclosed parenthesis in print()');
         }
 
         const assignments = code.match(/^[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*.+$/gm);
         if (assignments) {
             assignments.forEach(assignment => {
                 if (!/^[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*.+$/.test(assignment.trim())) {
-                    throw new Error('Некорректное присваивание: ' + assignment);
+                    throw new Error('Invalid assignment: ' + assignment);
                 }
             });
         }
@@ -39,19 +39,19 @@ func main() {
 
     const validateGoCode = (code) => {
         if (!code.trim()) {
-            throw new Error('Пустой код');
+            throw new Error('Empty code');
         }
 
         if (!code.includes('package main')) {
-            throw new Error('Ошибка: отсутствует объявление "package main"');
+            throw new Error('Error: missing "package main" declaration');
         }
 
         if (!code.includes('import')) {
-            throw new Error('Ошибка: отсутствуют импорты');
+            throw new Error('Error: missing imports');
         }
 
         if (!code.includes('fmt.Println(')) {
-            throw new Error('Код должен содержать хотя бы одну команду fmt.Println()');
+            throw new Error('Code must contain at least one fmt.Println() command');
         }
 
         if (code.includes('strings.Repeat')) {
@@ -59,10 +59,10 @@ func main() {
                 code.includes('import (\n    "strings"') ||
                 code.includes('import (\n\t"strings"');
             if (!hasStringsImport) {
-                throw new Error(`Для использования strings.Repeat добавьте импорт:
+                throw new Error(`To use strings.Repeat add import:
 import "strings"
 
-или в блоке импортов:
+or in import block:
 import (
     "fmt"
     "strings"
@@ -175,26 +175,26 @@ import (
     };
 
     const handleRunCode = () => {
-        setOutput('Выполняется...');
+        setOutput('Executing...');
 
         setTimeout(() => {
             try {
                 if (!code.trim()) {
-                    throw new Error('Ошибка: пустой код');
+                    throw new Error('Error: empty code');
                 }
 
                 if (language === 'python' && !code.includes('print(')) {
-                    throw new Error('Ошибка: код должен содержать хотя бы одну команду print()');
+                    throw new Error('Error: code must contain at least one print() command');
                 }
 
                 if (language === 'go' && !code.includes('package main')) {
-                    throw new Error('Ошибка: код Go должен начинаться с "package main"');
+                    throw new Error('Error: Go code must start with "package main"');
                 }
 
                 const result = executeCode(code, language);
-                setOutput(`=== Результат выполнения ===\n${result}\n[Программа выполнена успешно]`);
+                setOutput(`=== Execution Result ===\n${result}\n[Program executed successfully]`);
             } catch (error) {
-                setOutput(`❌ ОШИБКА ВЫПОЛНЕНИЯ ❌\n\n${error.message}\n\nПожалуйста, исправьте код и попробуйте снова.`);
+                setOutput(`❌ EXECUTION ERROR ❌\n\n${error.message}\n\nPlease fix the code and try again.`);
             }
         }, 500);
     };
@@ -211,7 +211,7 @@ import (
                     <option value="go">Go</option>
                 </select>
                 <button className="run-button" onClick={handleRunCode}>
-                    Запустить код
+                    Run Code
                 </button>
             </div>
 
